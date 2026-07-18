@@ -1,0 +1,46 @@
+name: Price Tracker Bot
+
+# Corre cada 5 minutos (el mínimo que permite GitHub Actions) revisando
+# si llegó un mensaje nuevo por Telegram. Si no llegó nada, termina casi
+# de inmediato sin gastar tiempo. "workflow_dispatch" además te deja
+# correrlo manualmente desde la pestaña Actions de GitHub, para probar.
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch: {}
+
+# Necesario para que el workflow pueda subir el historial_precios.json
+# actualizado de vuelta al repo.
+permissions:
+  contents: write
+
+jobs:
+  revisar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar el repo
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependencias
+        run: |
+          pip install requests beautifulsoup4 playwright
+          playwright install --with-deps chromium
+
+      - name: Correr el bot
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python bot_runner.py
+
+      - name: Guardar el historial de precios actualizado
+        run: |
+          git config user.name "price-tracker-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add historial_precios.json
+          git diff --staged --quiet || git commit -m "Actualiza historial de precios"
+          git push

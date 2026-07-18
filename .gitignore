@@ -1,0 +1,8 @@
+# Credenciales locales - NUNCA subir esto a GitHub, aunque el repo sea
+# público. En la nube, las credenciales van como GitHub Secrets, no en
+# este archivo.
+telegram_config.json
+
+# Python
+__pycache__/
+*.pyc

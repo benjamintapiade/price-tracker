@@ -1,0 +1,82 @@
+[
+  {
+    "id": "down-sweater-patagonia-azul",
+    "tienda": "patagonia",
+    "url": "https://cl.patagonia.com/products/chaqueta-hombre-down-sweater?variant=52181863006389",
+    "talla": "L",
+    "objetivo": 249000
+  },
+  {
+    "id": "down-sweater-sherpalife-negro",
+    "tienda": "sherpalife",
+    "url": "https://sherpalife.cl/chaqueta-hombre-down-sweater/176894?Talla=L&Color=Negro",
+    "objetivo": 249000
+  },
+  {
+    "id": "down-sweater-patagonia",
+    "tienda": "patagonia",
+    "url": "https://cl.patagonia.com/products/chaqueta-hombre-down-sweater?variant=52148416413877",
+    "talla": "L",
+    "objetivo": 249000
+  },
+  {
+    "id": "down-sweater-sherpalife-azul",
+    "tienda": "sherpalife",
+    "url": "https://sherpalife.cl/chaqueta-hombre-down-sweater/176894?Talla=L&Color=Azul",
+    "objetivo": 249000
+  },
+  {
+    "id": "down-sweater-andesgear-azul",
+    "tienda": "andesgear",
+    "url": "https://www.andesgear.cl/chaqueta-hombre-down-sweater-84675-om6099",
+    "objetivo": 249000
+  },
+  {
+    "id": "down-sweater-andesgear-negro",
+    "tienda": "andesgear",
+    "url": "https://www.andesgear.cl/chaqueta-hombre-down-sweater-84675-om041",
+    "objetivo": 249000
+  },
+  {
+    "id": "down-sweater-andesgear-negro-2",
+    "tienda": "andesgear",
+    "url": "https://www.andesgear.cl/chaqueta-hombre-down-sweater-84675-om6102",
+    "objetivo": 249000
+  },
+  {
+    "id": "parka-volker-doite-negro",
+    "tienda": "doite",
+    "url": "https://www.doite.cl/products/parka-pluma-volker-hombre-doite?variant=47068083618007",
+    "objetivo": 129990
+  },
+  {
+    "id": "parka-volker-doite-gris",
+    "tienda": "doite",
+    "url": "https://www.doite.cl/products/parka-pluma-volker-hombre-doite?variant=46988172820695",
+    "objetivo": 129990
+  },
+  {
+    "id": "parka-volker-ripley",
+    "tienda": "ripley",
+    "url": "https://simple.ripley.cl/parka-pluma-volker-hombre-doite-mpm10001835901",
+    "objetivo": 129990
+  },
+  {
+    "id": "parka-volker-209sports",
+    "tienda": "sherpalife",
+    "url": "https://209sports.cl/parka-pluma-volker-hombre/304542",
+    "objetivo": 129990
+  },
+  {
+    "id": "parka-volker-safelife",
+    "tienda": "sherpalife",
+    "url": "https://safelife.cl/parka-pluma-volker-hombre/304542",
+    "objetivo": 129990
+  },
+  {
+    "id": "parka-volker-onekayak",
+    "tienda": "sherpalife",
+    "url": "https://onekayak.cl/parka-pluma-volker-hombre/304542",
+    "objetivo": 129990
+  }
+]
