@@ -91,13 +91,29 @@ def scrape_andesgear(url: str) -> dict:
         titulo_el = page.query_selector("h1")
         nombre = titulo_el.inner_text().strip() if titulo_el else url
 
+        # Diagnóstico para cuando no se encuentra el precio: guardamos el
+        # título real de la página y un fragmento del texto visible, para
+        # poder ver en el log si el sitio bloqueó al navegador (challenge
+        # anti-bot, CAPTCHA, etc.) en vez de mostrar el producto normal —
+        # esto pasa más seguido cuando se corre desde IPs de centros de
+        # datos (como las de GitHub Actions) que desde una IP residencial.
+        diagnostico = None
+        if precio is None:
+            titulo_pagina = page.title()
+            texto_pagina = page.inner_text("body")[:300]
+            diagnostico = (
+                f"Título de la página: {titulo_pagina!r}. "
+                f"Primeros 300 caracteres: {texto_pagina!r}"
+            )
+
         browser.close()
 
     if precio is None:
         raise ValueError(
             f"No se pudo extraer el precio de {url} con ninguno de los "
             "dos métodos. Puede que Andesgear haya cambiado su "
-            "estructura — revisar con las DevTools del navegador."
+            "estructura, o haya bloqueado al navegador. "
+            f"Diagnóstico: {diagnostico}"
         )
 
     return {

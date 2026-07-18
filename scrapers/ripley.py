@@ -136,13 +136,22 @@ def scrape_ripley(url: str) -> dict:
         titulo_el = page.query_selector("h1")
         nombre = titulo_el.inner_text().strip() if titulo_el else url
 
+        diagnostico = None
+        if precio is None:
+            titulo_pagina = page.title()
+            texto_pagina = page.inner_text("body")[:300]
+            diagnostico = (
+                f"Título de la página: {titulo_pagina!r}. "
+                f"Primeros 300 caracteres: {texto_pagina!r}"
+            )
+
         browser.close()
 
     if precio is None:
         raise ValueError(
             f"No se pudo extraer el precio de {url} con ninguno de los "
-            "tres métodos. Puede que Ripley haya cambiado su estructura "
-            "— revisar con las DevTools del navegador."
+            "tres métodos. Puede que Ripley haya cambiado su estructura, "
+            f"o haya bloqueado al navegador. Diagnóstico: {diagnostico}"
         )
 
     return {
