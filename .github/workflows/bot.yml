@@ -7,11 +7,20 @@ name: Price Tracker Bot
 # OJO sobre lo "on-demand": como el cron mínimo real es de minutos pero
 # acá lo pusimos cada 12 h, si le mandas un mensaje al bot y quieres
 # respuesta al instante, tendrás que gatillarlo con "Run workflow" (o
-# esperar hasta la próxima corrida de las 00:00 / 12:00 UTC).
+# esperar hasta la próxima corrida de las 00:00 / 12:00 UTC). Ver nota
+# al final de la conversación sobre cómo tener ambas cosas.
 on:
   schedule:
     - cron: "0 0,12 * * *"
   workflow_dispatch: {}
+
+# Evita que dos corridas escriban historial_precios.json al mismo tiempo:
+# si el cron se dispara mientras ya hay una corrida en curso (o si
+# apretaste "Run workflow" dos veces seguido), la nueva espera en cola
+# en vez de correr en paralelo.
+concurrency:
+  group: price-tracker-bot
+  cancel-in-progress: false
 
 # Necesario para que el workflow pueda subir el historial_precios.json
 # actualizado de vuelta al repo.
@@ -47,4 +56,5 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git add historial_precios.json
           git diff --staged --quiet || git commit -m "Actualiza historial de precios"
+          git pull --rebase origin main
           git push
