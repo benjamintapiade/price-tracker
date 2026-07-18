@@ -1,20 +1,21 @@
 """
-Bot "on-demand": cuando le mandas cualquier mensaje al bot de Telegram,
-este script (corrido por GitHub Actions cada 5 minutos) detecta que
-llegó un mensaje tuyo, revisa TODOS los precios y te responde con la
-lista completa, destacando los que subieron o bajaron desde la última
-revisión.
+Bot de reporte de precios, pensado para correr en GitHub Actions.
+
+Se gatilla de dos formas:
+  - Automáticamente cada 12 horas (el cron del workflow).
+  - Manualmente, cuando aprietas "Run workflow" en la pestaña Actions
+    de GitHub (útil si le mandaste un mensaje al bot y quieres el reporte
+    al instante, sin esperar a la próxima corrida automática).
+
+En cualquiera de esos dos casos revisa TODOS los precios y te manda por
+Telegram la lista completa, destacando los que subieron o bajaron desde
+la última revisión.
 
 No hay ningún servidor corriendo 24/7: GitHub Actions "despierta" este
-script cada 5 minutos, revisa si hay mensajes nuevos, y si hay uno tuyo,
-corre todo y te contesta por Telegram. El historial de precios vive en
-historial_precios.json, que el propio workflow de GitHub Actions
-actualiza y sube al repo después de cada corrida (así el próximo run,
-aunque sea una máquina nueva de GitHub, "recuerda" el precio anterior).
-
-Seguridad: solo reacciona a mensajes que vengan de TU chat_id (el que
-configuraste). Si alguien más le escribe al bot, el mensaje se descarta
-sin gastar minutos de Actions en scrapear nada.
+script, lo corre y se apaga. El historial de precios vive en
+historial_precios.json, que el propio workflow actualiza y sube al repo
+después de cada corrida (así el próximo run, aunque sea una máquina
+nueva de GitHub, "recuerda" el precio anterior para comparar).
 
 Config de credenciales: primero busca las variables de entorno
 TELEGRAM_BOT_TOKEN y TELEGRAM_CHAT_ID (así corre en GitHub Actions,
@@ -51,9 +52,8 @@ def obtener_mensajes_nuevos(token: str) -> list[dict]:
 def confirmar_mensajes(token: str, updates: list[dict]) -> None:
     """Le dice a Telegram "ya vi estos mensajes, no me los vuelvas a mandar".
 
-    Sin esto, cada corrida (cada 5 min) volvería a ver el mismo mensaje
-    viejo para siempre y dispararía una revisión de precios innecesaria
-    una y otra vez.
+    Sin esto, cada corrida volvería a ver el mismo mensaje viejo para
+    siempre y dispararía una revisión de precios innecesaria una y otra vez.
     """
     if not updates:
         return
@@ -97,26 +97,34 @@ def enviar_respuesta(token: str, chat_id: str, mensaje: str) -> None:
 def main() -> None:
     token, chat_id_autorizado = _config_telegram()
 
+    # ¿Cómo se gatilló esta corrida? GitHub Actions define GITHUB_EVENT_NAME:
+    #   - "schedule"          -> el cron automático de cada 12 h
+    #   - "workflow_dispatch" -> apretaste "Run workflow" a mano en GitHub
+    # En ambos casos queremos reportar SIEMPRE, sin depender de que haya
+    # un mensaje nuevo. Solo cuando corres el script localmente en tu PC
+    # (sin esa variable) mantenemos el comportamiento de "responde si le
+    # escribiste al bot".
+    evento = os.environ.get("GITHUB_EVENT_NAME")
+    reportar_siempre = evento in ("schedule", "workflow_dispatch")
+
     updates = obtener_mensajes_nuevos(token)
-    if not updates:
-        print("No hay mensajes nuevos. No se hace nada.")
-        return
 
-    mensajes_autorizados = [
-        u
-        for u in updates
-        if str(u.get("message", {}).get("chat", {}).get("id")) == str(chat_id_autorizado)
-    ]
+    # Siempre confirmamos los mensajes vistos, así no se re-procesan luego.
+    if updates:
+        confirmar_mensajes(token, updates)
 
-    # Confirmamos TODOS los mensajes vistos (autorizados o no), para no
-    # volver a procesarlos en la próxima corrida.
-    confirmar_mensajes(token, updates)
+    if not reportar_siempre:
+        # Modo local: solo seguimos si TÚ le escribiste al bot.
+        mensajes_autorizados = [
+            u
+            for u in updates
+            if str(u.get("message", {}).get("chat", {}).get("id")) == str(chat_id_autorizado)
+        ]
+        if not mensajes_autorizados:
+            print("No hay mensajes tuyos nuevos. No se hace nada.")
+            return
 
-    if not mensajes_autorizados:
-        print("Había mensajes nuevos, pero de otro chat_id. Se ignoran.")
-        return
-
-    print(f"Mensaje recibido de tu chat_id. Revisando {len(cargar_productos())} productos...")
+    print(f"Revisando {len(cargar_productos())} productos...")
 
     productos = cargar_productos()
     resultados = revisar_precios(productos)
