@@ -14,14 +14,14 @@ import json
 RUTA_HISTORIAL = "historial_precios.json"
 
 
-def cargar_historial() -> dict:
+def cargar_historial(ruta: str = RUTA_HISTORIAL) -> dict:
     try:
-        with open(RUTA_HISTORIAL, encoding="utf-8") as f:
+        with open(ruta, encoding="utf-8") as f:
             return json.load(f)
     except FileNotFoundError:
         return {}
 
 
-def guardar_historial(historial: dict) -> None:
-    with open(RUTA_HISTORIAL, "w", encoding="utf-8") as f:
+def guardar_historial(historial: dict, ruta: str = RUTA_HISTORIAL) -> None:
+    with open(ruta, "w", encoding="utf-8") as f:
         json.dump(historial, f, ensure_ascii=False, indent=2, sort_keys=True)

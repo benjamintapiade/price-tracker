@@ -26,24 +26,6 @@
     "objetivo": 249000
   },
   {
-    "id": "down-sweater-andesgear-azul",
-    "tienda": "andesgear",
-    "url": "https://www.andesgear.cl/chaqueta-hombre-down-sweater-84675-om6099",
-    "objetivo": 249000
-  },
-  {
-    "id": "down-sweater-andesgear-negro",
-    "tienda": "andesgear",
-    "url": "https://www.andesgear.cl/chaqueta-hombre-down-sweater-84675-om041",
-    "objetivo": 249000
-  },
-  {
-    "id": "down-sweater-andesgear-negro-2",
-    "tienda": "andesgear",
-    "url": "https://www.andesgear.cl/chaqueta-hombre-down-sweater-84675-om6102",
-    "objetivo": 249000
-  },
-  {
     "id": "parka-volker-doite-negro",
     "tienda": "doite",
     "url": "https://www.doite.cl/products/parka-pluma-volker-hombre-doite?variant=47068083618007",
@@ -53,12 +35,6 @@
     "id": "parka-volker-doite-gris",
     "tienda": "doite",
     "url": "https://www.doite.cl/products/parka-pluma-volker-hombre-doite?variant=46988172820695",
-    "objetivo": 129990
-  },
-  {
-    "id": "parka-volker-ripley",
-    "tienda": "ripley",
-    "url": "https://simple.ripley.cl/parka-pluma-volker-hombre-doite-mpm10001835901",
     "objetivo": 129990
   },
   {
